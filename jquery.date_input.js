@@ -217,9 +217,20 @@ DateInput.prototype = {
   
   setPosition: function() {
     var offset = this.input.offset();
+	if (this.input.offsetParent().not('body').length>0) {
+		// If there is a positioned parent, the element is positioned in relationship to the parent:
+		var ospOffset = this.offsetParent.not('body').offset();
+		var left = offset.left - ospOffset.left;
+		var top = (offset.top - ospOffset.top) + this.input.outerHeight();
+	} else {
+		// If no positioned parent, position in relationship to the page:
+		var left = offset.left;
+		var top = offset.top + this.input.outerHeight();
+	}
+	// set the element's actual position:
     this.rootLayers.css({
-      top: offset.top + this.input.outerHeight(),
-      left: offset.left
+      top: top,
+      left: left
     });
     
     if (this.ieframe) {
